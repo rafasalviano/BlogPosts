@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/lambda/-Praticar/blog-post/backend/WebApiMongoDbDemo.csproj": {}
+    "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj": {}
   },
   "projects": {
-    "/Users/lambda/-Praticar/blog-post/backend/WebApiMongoDbDemo.csproj": {
+    "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/lambda/-Praticar/blog-post/backend/WebApiMongoDbDemo.csproj",
+        "projectUniqueName": "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj",
         "projectName": "WebApiMongoDbDemo",
-        "projectPath": "/Users/lambda/-Praticar/blog-post/backend/WebApiMongoDbDemo.csproj",
+        "projectPath": "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj",
         "packagesPath": "/Users/lambda/.nuget/packages/",
-        "outputPath": "/Users/lambda/-Praticar/blog-post/backend/obj/",
+        "outputPath": "/Users/lambda/Tutoriais/blog-post/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/lambda/.nuget/NuGet/NuGet.Config"

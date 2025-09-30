@@ -17,7 +17,7 @@ namespace WebApiMongoDbDemo.Entities
         public string Content { get; set; } = default!;
 
         [BsonElement("created_at")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
         [BsonElement("updated_at")]
         public DateTime? UpdatedAt { get; set; }

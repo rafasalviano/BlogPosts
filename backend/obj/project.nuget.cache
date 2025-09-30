@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1/d1l5hLABr/h9CvCP4JSTZjoELIqNzFsH3YhPtHDhCdfbMzyRGdR9e/9Yi9EK9z0nzOyq1zxbkwsjeC43d8Yg==",
+  "dgSpecHash": "BmNuX4gbUOfUL7zo4uZyqS0ylB6ETgrJLlweNTjda4LytnyZgCj9ojxHSuEUFCJKnNJJ49Ktr9ei+Fhitkm6Qg==",
   "success": true,
-  "projectFilePath": "/Users/lambda/-Praticar/blog-post/backend/WebApiMongoDbDemo.csproj",
+  "projectFilePath": "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj",
   "expectedPackageFiles": [
     "/Users/lambda/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
     "/Users/lambda/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",

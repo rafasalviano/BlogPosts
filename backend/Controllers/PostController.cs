@@ -21,11 +21,14 @@ namespace WebApiMongoDbDemo.Controllers
         [HttpPost]
         public async Task<ActionResult<Post>> Create([FromBody] CreatePostRequest req)
         {
+            TimeZoneInfo brasiliaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            DateTimeOffset brasiliaTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, brasiliaTimeZone);
+            // Console.WriteLine($"Timezone ID")
             var post = new Post
             {
                 Title = req.title,
                 Content = req.post,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = brasiliaTime,
             };
 
             await _posts.InsertOneAsync(post);
