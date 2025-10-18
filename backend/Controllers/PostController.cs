@@ -1,71 +1,59 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using WebApiMongoDbDemo.Data;
-using WebApiMongoDbDemo.Entities;
+using WebApiMongoDbDemo.Domain;
+using WebApiMongoDbDemo.Domain.Interfaces;
 
-namespace WebApiMongoDbDemo.Controllers
+namespace WebApiMongoDbDemo.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class PostController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PostController : ControllerBase
+    private readonly IPostService _service;
+
+    public PostController(IPostService service)
     {
-        private readonly IMongoCollection<Post> _posts;
+        _service = service;
+    }
 
-        public PostController(MongoDbService mongoDbService)
+    public record CreatePostRequest(string Title, string Content);
+
+    [HttpPost]
+    public async Task<ActionResult<Post>> Create([FromBody] CreatePostRequest req)
+    {
+        var post = new Post
         {
-            _posts = mongoDbService.Database!.GetCollection<Post>("posts");
-        }
+            Title = req.Title,
+            Content = req.Content,
+            CreatedAt = DateTime.UtcNow
+        };
 
-        public record CreatePostRequest(string title, string post); // matches your frontend payload
+        var created = await _service.CreateAsync(post);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<Post>> Create([FromBody] CreatePostRequest req)
-        {
-            TimeZoneInfo brasiliaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-            DateTimeOffset brasiliaTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, brasiliaTimeZone);
-            // Console.WriteLine($"Timezone ID")
-            var post = new Post
-            {
-                Title = req.title,
-                Content = req.post,
-                CreatedAt = brasiliaTime,
-            };
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Post>> GetById(string id)
+    {
+        var post = await _service.GetByIdAsync(id);
+        return post is null ? NotFound() : Ok(post);
+    }
 
-            await _posts.InsertOneAsync(post);
-            return CreatedAtAction(nameof(GetById), new { id = post.Id }, post);
-        }
+    [HttpGet]
+    public async Task<IEnumerable<Post>> GetAll()
+        => await _service.GetAllAsync();
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetById(string id)
-        {
-            var filter = Builders<Post>.Filter.Eq(x => x.Id, id);
-            var found = await _posts.Find(filter).FirstOrDefaultAsync();
-            return found is not null ? Ok(found) : NotFound();
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] CreatePostRequest req)
+    {
+        var post = new Post { Id = id, Title = req.Title, Content = req.Content };
+        var updated = await _service.UpdateAsync(post);
+        return updated is null ? NotFound() : NoContent();
+    }
 
-        [HttpGet]
-        public async Task<IEnumerable<Post>> GetAll()
-        {
-            return await _posts.Find(FilterDefinition<Post>.Empty).ToListAsync();
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] CreatePostRequest req)
-        {
-            var update = Builders<Post>.Update
-                .Set(x => x.Title, req.title)
-                .Set(x => x.Content, req.post)
-                .Set(x => x.UpdatedAt, DateTime.UtcNow);
-
-            var result = await _posts.UpdateOneAsync(x => x.Id == id, update);
-            return result.MatchedCount == 0 ? NotFound() : NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var result = await _posts.DeleteOneAsync(x => x.Id == id);
-            return result.DeletedCount == 0 ? NotFound() : NoContent();
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        await _service.DeleteAsync(id);
+        return NoContent();
     }
 }
