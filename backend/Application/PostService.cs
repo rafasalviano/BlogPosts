@@ -41,10 +41,27 @@ public class PostService : IPostService
     public async Task DeleteAsync(string id)
         => await _repo.DeleteAsync(id);
 
+    public async Task DeleteAllAsync()
+    {
+        await _repo.DeleteAllAsync();
+    }
     public async Task<IEnumerable<Post>> GetAllAsync()
     {
         var dtos = await _repo.GetAllAsync();
         return dtos.Select(MapToDomain);
+    }
+
+    public async Task<IEnumerable<Post>> GetPaginatedAsync(int skip, int take)
+    {
+        var dtos = await _repo.GetPaginatedAsync(skip, take);
+        return dtos.Select(dto => new Post
+        {
+            Id = dto.Id.ToString(),
+            Title = dto.Title,
+            Content = dto.Content,
+            CreatedAt = dto.CreatedAt,
+            UpdatedAt = dto.UpdatedAt
+        });
     }
 
     public async Task<Post?> GetByIdAsync(string id)

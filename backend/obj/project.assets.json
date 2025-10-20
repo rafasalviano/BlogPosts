@@ -31,6 +31,19 @@
           }
         }
       },
+      "Bogus/35.6.4": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Bogus.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Bogus.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "DnsClient/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -433,6 +446,27 @@
         "lib/netstandard2.0/AWSSDK.SecurityToken.xml",
         "tools/install.ps1",
         "tools/uninstall.ps1"
+      ]
+    },
+    "Bogus/35.6.4": {
+      "sha512": "9ruy4agpXZ2L3B29IypUZJh61/lq+7Tbs03KyS0Uxrkx7c20JuWB1vMtZ0xBqwnekZGphjBhX7MkhM1nb5BA5g==",
+      "type": "package",
+      "path": "bogus/35.6.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "bogus.128.png",
+        "bogus.35.6.4.nupkg.sha512",
+        "bogus.nuspec",
+        "lib/net40/Bogus.dll",
+        "lib/net40/Bogus.xml",
+        "lib/net6.0/Bogus.dll",
+        "lib/net6.0/Bogus.xml",
+        "lib/netstandard1.3/Bogus.dll",
+        "lib/netstandard1.3/Bogus.xml",
+        "lib/netstandard2.0/Bogus.dll",
+        "lib/netstandard2.0/Bogus.xml"
       ]
     },
     "DnsClient/1.6.1": {
@@ -1191,6 +1225,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "Bogus >= 35.6.4",
       "MongoDB.Driver >= 2.23.1",
       "Swashbuckle.AspNetCore >= 6.4.0"
     ]
@@ -1233,6 +1268,10 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "Bogus": {
+            "target": "Package",
+            "version": "[35.6.4, )"
+          },
           "MongoDB.Driver": {
             "target": "Package",
             "version": "[2.23.1, )"

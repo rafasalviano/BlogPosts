@@ -43,3 +43,4 @@
 /Users/lambda/Tutoriais/blog-post/backend/obj/Debug/net7.0/WebApiMongoDbDemo.pdb
 /Users/lambda/Tutoriais/blog-post/backend/obj/Debug/net7.0/WebApiMongoDbDemo.genruntimeconfig.cache
 /Users/lambda/Tutoriais/blog-post/backend/obj/Debug/net7.0/ref/WebApiMongoDbDemo.dll
+/Users/lambda/Tutoriais/blog-post/backend/bin/Debug/net7.0/Bogus.dll

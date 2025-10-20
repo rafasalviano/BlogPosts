@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "BmNuX4gbUOfUL7zo4uZyqS0ylB6ETgrJLlweNTjda4LytnyZgCj9ojxHSuEUFCJKnNJJ49Ktr9ei+Fhitkm6Qg==",
+  "dgSpecHash": "8Ie8NOiN+cbn0WWaP3CAqum91rAUGPeea+dJtnBvwp7Lm7A6+xjcjoM75UBez72Nza8BfWYoqpdCPRLMzMT+LA==",
   "success": true,
   "projectFilePath": "/Users/lambda/Tutoriais/blog-post/backend/WebApiMongoDbDemo.csproj",
   "expectedPackageFiles": [
     "/Users/lambda/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
     "/Users/lambda/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",
+    "/Users/lambda/.nuget/packages/bogus/35.6.4/bogus.35.6.4.nupkg.sha512",
     "/Users/lambda/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
     "/Users/lambda/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/lambda/.nuget/packages/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",

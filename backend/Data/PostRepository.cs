@@ -28,8 +28,18 @@ public class PostRepository : IPostRepository
     public async Task DeleteAsync(string id)
         => await _posts.DeleteOneAsync(x => x.Id == id);
 
+    public async Task DeleteAllAsync()
+        => await _posts.DeleteManyAsync(Builders<PostDto>.Filter.Empty);
     public async Task<IEnumerable<PostDto>> GetAllAsync()
         => await _posts.Find(FilterDefinition<PostDto>.Empty).ToListAsync();
+    public async Task<IEnumerable<PostDto>> GetPaginatedAsync(int skip, int take)
+    {
+        return await _posts.Find(_ => true)
+            .Skip(skip)
+            .Limit(take)
+            .ToListAsync();
+    }
+
 
     public async Task<PostDto?> GetByIdAsync(string id)
         => await _posts.Find(x => x.Id == id).FirstOrDefaultAsync();
