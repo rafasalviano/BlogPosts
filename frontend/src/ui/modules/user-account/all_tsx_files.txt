@@ -1,0 +1,506 @@
+
+                                      CONTAINERS
+
+
+----- ./user-posts/UserPost.view.tsx -----
+// src/ui/modules/user-account/user-posts/UserPost.container.tsx (or .view.tsx if you prefer)
+import { FC, useCallback, useState } from "react";
+import { useRouter } from "next/router";
+import { NewPostFormFieldsType } from "@/types/forms";
+import { Typography } from "@/ui/design-system/typography/Typography";
+import { Box } from "@/ui/design-system/box/Box";
+import { Container } from "@/ui/components/container/Container";
+import Link from "next/link";
+import { Button } from "@/ui/design-system/button/Button"; // a normal button (not ButtonLink)
+import { toast } from "react-toastify";
+
+interface IUserPostViewProps {
+  post: NewPostFormFieldsType & { id?: string };
+}
+
+export const UserPostView: FC<IUserPostViewProps> = ({ post }) => {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  if (!post) return <div>Not found</div>;
+
+  const handleDelete = useCallback(async () => {
+    if (!post.id) {
+      toast.error("Missing post id.");
+      return;
+    }
+    const yes = window.confirm("Delete this post? This cannot be undone.");
+    if (!yes) return;
+
+    try {
+      setIsDeleting(true);
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5027";
+      const res = await fetch(`${base}/api/post/${post.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      toast.success("Post deleted.");
+      router.push("/post"); // back to list
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [post?.id, router]);
+
+  return (
+    <>
+      <Container className="grid grid-cols-4 gap-20 mb-20 items-center">
+        <div className="col-span-4">
+          <Box className="flex-row">
+            <div className="flex items-center justify-end">
+              <div className="flex items-cente gap-2">
+                <Typography variant="caption-3">
+                  Tu veux voir la liste de tes posts precedents?
+                </Typography>
+                <Typography theme="primary" variant="caption-3">
+                  <Link href="/post">Mes posts</Link>
+                </Typography>
+              </div>
+            </div>
+
+            <Typography variant="h5" theme="primary" className="pl-5 mt-10">
+              {post.post_title}
+            </Typography>
+
+            <Box className="mt-6 py-10">
+              <Typography variant="body-base" className="flex text-gray-700 justify-start pb-10">
+                {post.post}
+              </Typography>
+            </Box>
+
+            <div className="flex flex-row justify-end gap-3 mr-4 mt-20">
+              {/* Edit: go to the edit page */}
+              <Link href={`/meu-espaco/post/${post.id}/edit`} className="inline-block">
+                <Button variant="secondary" size="small">Edit</Button>
+              </Link>
+
+              {/* Delete: do the fetch */}
+              <Button
+                variant="danger"
+                size="small"
+                action={handleDelete}
+                isLoading={isDeleting}
+              >
+                Delete
+              </Button>
+            </div>
+          </Box>
+        </div>
+      </Container>
+    </>
+  );
+};
+----- ./user-posts/UserPost.container.tsx -----
+import { FC } from "react";
+import { NewPostFormFieldsType } from "@/types/forms";
+import { UserPostView } from "./UserPost.view";
+
+interface IUserPostContainerProps {
+  post: NewPostFormFieldsType;
+}
+
+export const UserPostContainer: FC<IUserPostContainerProps> = ({ post }) => {
+  if (!post) return <div>Not found</div>;
+
+  return <UserPostView post={post}/>
+};
+----- ./user-all-posts/UserAllPosts.view.tsx -----
+import { Box } from "@/ui/design-system/box/Box";
+import { Typography } from "@/ui/design-system/typography/Typography";
+import Link from "next/link";
+
+type ApiPost = {
+  id?: string;
+  title?: string;
+  content?: string;
+  createdAt?: string;
+};
+
+interface IUserAllPostsViewProps {
+  posts: ApiPost[];
+}
+
+export const UserAllPostsView = ({ posts }: IUserAllPostsViewProps) => {
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="p-6 text-center text-gray-600">
+        You still haven&apos;t posted anything ✨
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-4">
+      <Typography className="text-gray-700 mb-10" variant="h4">Mes Posts</Typography>
+      <ul className="space-y-2">
+        {posts.map((post) => (
+          <Box key={post.id} className="p-4 border rounded hover:bg-gray-50">
+            <Link href={`/meu-espaco/post/${post.id}`}>
+              <Typography theme="primary" variant="body-base">{post.title}</Typography>
+              <Typography theme="gray" variant="body-sm">{post.content}</Typography>
+            </Link>
+          </Box>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+----- ./user-all-posts/UserAllPosts.container.tsx -----
+import Link from "next/link";
+import { UserAllPostsView } from "./UserAllPosts.view";
+
+type ApiPost = {
+  id?: string;
+  title?: string;
+  content?: string;
+  createdAt?: string;
+};
+
+interface IUserAllPostsContainerProps {
+  posts: ApiPost[];
+}
+
+export const UserAllPostsContainer = ({ posts }: IUserAllPostsContainerProps) => {
+  return <UserAllPostsView posts={posts}/>
+};
+
+----- ./user-edit-post/UserEditPost.view.tsx -----
+import { FC } from "react";
+import { FormsType } from "@/types/forms";
+import { Container } from "@/ui/components/container/Container";
+import { Box } from "@/ui/design-system/box/Box";
+import { Typography } from "@/ui/design-system/typography/Typography";
+import Link from "next/link";
+import { UserEditPostForm } from "./UserEditPost.form";
+
+interface IUserEditPostViewProps {
+  form: FormsType;
+}
+
+export const UserEditPostView: FC<IUserEditPostViewProps> = ({ form }) => {
+  return (
+    <Container className="grid grid-cols-4 gap-20 mb-20 items-center">
+      <div className="col-span-4 mb-10">
+        <Box>
+          <div className="flex items-center justify-between">
+              <Typography className="text-gray-700" variant="h5">
+                  Modifier post
+              </Typography>
+              <div className="flex items-cente gap-2">
+                  <Typography variant="caption-3">
+                      Tu veux voir la liste de tes posts precedents?
+                  </Typography>
+                  <Typography theme="primary" variant="caption-3">
+                      <Link href="/meu-espaco/post">
+                          Mes posts
+                      </Link>
+                  </Typography>
+              </div>
+          </div>
+          <UserEditPostForm form={form} />
+        </Box>
+      </div>
+    </Container>
+  );
+};
+----- ./user-edit-post/UserEditPost.container.tsx -----
+import { FC, useState } from "react";
+import { useRouter } from "next/router";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { UserEditPostView } from "./UserEditPost.view";
+
+export type FormPost = { id?: string; post_title: string; post: string };
+
+interface IUserEditPostContainerProps {
+  post: FormPost;
+}
+
+export const UserEditPostContainer: FC<IUserEditPostContainerProps> = ({ post }) => {
+  const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormPost>({
+    defaultValues: post,
+  });
+
+  const onSubmit: SubmitHandler<FormPost> = async (data) => {
+    if (!post.id) {
+      toast.error("Missing post id.");
+      return;
+    }
+    try {
+      setIsSaving(true);
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5027";
+      const res = await fetch(`${base}/api/post/${post.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: data.post_title, post: data.post }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      toast.success("Post updated!");
+      router.push(`/post/${post.id}`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to update post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <UserEditPostView
+      form={{
+        register,
+        handleSubmit,
+        onSubmit,
+        errors,
+        isLoading: isSaving,
+      }}
+    />
+  );
+};
+----- ./user-edit-post/UserEditPost.form.tsx -----
+import { FC } from "react";
+import { FormsType } from "@/types/forms";
+import { Input } from "@/ui/design-system/input/Input";
+import { TextArea } from "@/ui/design-system/text-area/Text-area";
+import { Button } from "@/ui/design-system/button/Button";
+
+interface IUserEditPostFormProps {
+  form: FormsType; // assumes same shape you use elsewhere: { register, errors, isLoading, onSubmit, handleSubmit }
+}
+
+export const UserEditPostForm: FC<IUserEditPostFormProps> = ({ form }) => {
+  const { register, errors, isLoading, onSubmit, handleSubmit } = form;
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
+      <Input
+        placeholder="Titre"
+        type="text"
+        id="post_title"
+        register={register}
+        errors={errors}
+        errorMsg="Tu dois renseigner ce champ"
+        isLoading={isLoading}
+        className="font-extrabold text-3xl text-gray-800"
+        autoFocus={true}
+      />
+      <TextArea
+        placeholder="Quelles sont tes pensées...?"
+        type="text"
+        id="post"
+        register={register}
+        errors={errors}
+        errorMsg="Tu dois renseigner ce champ"
+        isLoading={isLoading}
+        className="min-h-[30rem] text-xl text-gray-800"
+      />
+      <Button type="submit" fullWidth isLoading={isLoading}>
+        Save changes
+      </Button>
+    </form>
+  );
+};
+----- ./user-new-post/UserNewPost.container.tsx -----
+import { SubmitHandler, useForm } from "react-hook-form";
+import { NewPostFormFieldsType, RegisterFormFieldsType } from "@/types/forms";
+import { useState } from "react";
+import { useToggle } from "@/hooks/use-toggle";
+import { firebaseCreateUser, firebaseEmailVerification } from "@/api/Authentication";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { firestoreCreateDocument } from "@/api/Firestore";
+import { sendEmailVerification } from "firebase/auth";
+import { UserNewPostView } from "./UserNewPost.view";
+
+
+export const UserNewPostContainer = () => {
+  const {value: isLoading, setValue: setIsLoading} = useToggle();
+  const router = useRouter()
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    setError,
+    reset,
+  } = useForm<NewPostFormFieldsType>();
+
+const handleCreateNewPost = async ({ post_title, post }: NewPostFormFieldsType) => {
+    if (isLoading) return; // prevent double submit
+    setIsLoading(true);
+    
+    try {
+      const res = await fetch("http://localhost:5027/api/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: post_title, post }), // matches CreatePostRequest(title, post)
+      });
+
+      if (!res.ok) {
+        const text = await res.text(); // reads response body as a text
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      const created = await res.json();
+      toast.success("Post created!");
+
+      reset(); // clear the form
+
+      // ??  “if the left side is null or undefined, use the right side instead”
+      const id = created.id ?? created.Id;
+      if (id) router.push(`/meu-espaco/post/${id}`);
+    } catch (err: any) {
+      // → tries to use the error object’s message property, if err.message is null or undefined, 
+      // it falls back to the string "Failed to create post"
+      toast.error(err.message ?? "Failed to create post");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit: SubmitHandler<NewPostFormFieldsType> = async (formData) => {
+    setIsLoading(true);
+    console.log("formData", formData);
+    const {post_title} = formData
+    await handleCreateNewPost(formData);
+  };
+
+  return (
+    <UserNewPostView
+      form={{
+        errors,
+        register,
+        handleSubmit,
+        onSubmit,
+        isLoading,
+      }}
+    />
+  );
+};
+----- ./user-new-post/UserNewPost.form.tsx -----
+import { FormsType } from "@/types/forms"
+import { Button } from "@/ui/design-system/button/Button"
+import { Input } from "@/ui/design-system/input/Input"
+import { TextArea } from "@/ui/design-system/text-area/Text-area"
+import { FC } from "react"
+
+interface IUserNewPostFormProps {
+    form: FormsType
+}
+
+export const UserNewPostForm:FC<IUserNewPostFormProps> = ({form}) => {
+    const {register, errors, isLoading, onSubmit, handleSubmit} = form
+    return(
+        <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
+            <Input 
+                placeholder="Titre" 
+                type={"text"} 
+                id={"post_title"} 
+                register={register} 
+                errors={errors} 
+                errorMsg={"Tu dois renseigner ce champ"} 
+                isLoading={isLoading} 
+                className="font-extrabold text-4xl text-gray-800"
+            />
+            <TextArea 
+                placeholder="Quelles sont tes pensées...?" 
+                type={"text"} 
+                id={"post"} 
+                register={register} 
+                errors={errors} 
+                errorMsg={"Tu dois renseigner ce champ"} 
+                isLoading={isLoading}
+                className="min-h-[30rem] text-xl text-gray-800"
+            />
+
+            <Button fullWidth type="submit" isLoading={isLoading}>C'est fait!</Button>
+        </form>
+    )
+}
+----- ./user-new-post/UserNewPost.view.tsx -----
+import { Box } from "@/ui/design-system/box/Box"
+import Image from "next/image"
+import { Typography } from "@/ui/design-system/typography/Typography"
+import { Container } from "@/ui/components/container/Container"
+import Link from "next/link"
+import { FormsType } from "@/types/forms"
+import { FC } from "react"
+import { UserNewPostForm } from "./UserNewPost.form"
+
+interface IUserNewPostViewProps {
+    form: FormsType
+}
+
+export const UserNewPostView: FC<IUserNewPostViewProps> = ({form}) => {
+    return (
+        <>
+            <Container className="grid grid-cols-4 gap-20 mb-20 items-center">
+                <div className="col-span-4">
+                    <Box>
+                        <div className="flex items-center justify-between">
+                            <Typography className="text-gray-700" variant="h5">
+                                Nouveau Post
+                            </Typography>
+                            <div className="flex items-cente gap-2">
+                                <Typography variant="caption-3">
+                                    Tu veux voir la liste de tes posts precedents?
+                                </Typography>
+                                <Typography theme="primary" variant="caption-3">
+                                    <Link href="/meu-espaco/post">
+                                        Mes posts
+                                    </Link>
+                                </Typography>
+                            </div>
+                        </div>
+                        <UserNewPostForm form={form}/>
+                    </Box>
+                </div>
+            </Container>
+        </>
+    )
+}
+
+
+// import { Box } from "@/ui/design-system/box/Box"
+// import { TextBox } from "@/ui/design-system/box/Text-box"
+// import { Input } from "@/ui/design-system/input/Input"
+// import { Typography } from "@/ui/design-system/typography/Typography"
+
+
+// export const UserNewPostContainer = () => {
+//     return(
+//         <>
+//             <Typography variant="h4" theme="gray">Nouveau Post</Typography>
+//             <div className="flex justify-center pt-20 pb-40">
+//                 <TextBox>
+//                     <Input placeholder={""} id={"email"} register={undefined} errors={undefined} isLoading={false}>Titre</Input>
+//                     <textarea className="w-full h-full resize-none outline-none placeholder-gray-700 placeholder:text-lg" placeholder="Il y en a quoi dans ta tête...?" />
+//                 </TextBox>
+//             </div>
+//         </>
+//     )
+// }
+----- ./user-profile/UserAccount.container.tsx -----
+export const UserAccountContainer = () => {
+    return(
+        <div className="flex justify-center pt-20 pb-40">Hello, this is UserAccountContainer, the user is logged in, we have to edit Layout</div>
+    )
+}

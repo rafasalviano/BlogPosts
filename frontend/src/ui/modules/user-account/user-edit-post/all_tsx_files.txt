@@ -1,0 +1,138 @@
+import { FC, useState } from "react";
+import { useRouter } from "next/router";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { UserEditPostView } from "./UserEditPost.view";
+
+export type FormPost = { id?: string; post_title: string; post: string };
+
+interface IUserEditPostContainerProps {
+  post: FormPost;
+}
+
+export const UserEditPostContainer: FC<IUserEditPostContainerProps> = ({ post }) => {
+  const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormPost>({
+    defaultValues: post,
+  });
+
+  const onSubmit: SubmitHandler<FormPost> = async (data) => {
+    if (!post.id) {
+      toast.error("Missing post id.");
+      return;
+    }
+    try {
+      setIsSaving(true);
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5027";
+      const res = await fetch(`${base}/api/post/${post.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: data.post_title, post: data.post }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      toast.success("Post updated!");
+      router.push(`/post/${post.id}`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to update post");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <UserEditPostView
+      form={{
+        register,
+        handleSubmit,
+        onSubmit,
+        errors,
+        isLoading: isSaving,
+      }}
+    />
+  );
+};import { FC } from "react";
+import { FormsType } from "@/types/forms";
+import { Input } from "@/ui/design-system/input/Input";
+import { TextArea } from "@/ui/design-system/text-area/Text-area";
+import { Button } from "@/ui/design-system/button/Button";
+
+interface IUserEditPostFormProps {
+  form: FormsType; // assumes same shape you use elsewhere: { register, errors, isLoading, onSubmit, handleSubmit }
+}
+
+export const UserEditPostForm: FC<IUserEditPostFormProps> = ({ form }) => {
+  const { register, errors, isLoading, onSubmit, handleSubmit } = form;
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
+      <Input
+        placeholder="Titre"
+        type="text"
+        id="post_title"
+        register={register}
+        errors={errors}
+        errorMsg="Tu dois renseigner ce champ"
+        isLoading={isLoading}
+        className="font-extrabold text-3xl text-gray-800"
+        autoFocus={true}
+      />
+      <TextArea
+        placeholder="Quelles sont tes pensées...?"
+        type="text"
+        id="post"
+        register={register}
+        errors={errors}
+        errorMsg="Tu dois renseigner ce champ"
+        isLoading={isLoading}
+        className="min-h-[30rem] text-xl text-gray-800"
+      />
+      <Button type="submit" fullWidth isLoading={isLoading}>
+        Save changes
+      </Button>
+    </form>
+  );
+};import { FC } from "react";
+import { FormsType } from "@/types/forms";
+import { Container } from "@/ui/components/container/Container";
+import { Box } from "@/ui/design-system/box/Box";
+import { Typography } from "@/ui/design-system/typography/Typography";
+import Link from "next/link";
+import { UserEditPostForm } from "./UserEditPost.form";
+
+interface IUserEditPostViewProps {
+  form: FormsType;
+}
+
+export const UserEditPostView: FC<IUserEditPostViewProps> = ({ form }) => {
+  return (
+    <Container className="grid grid-cols-4 gap-20 mb-20 items-center">
+      <div className="col-span-4 mb-10">
+        <Box>
+          <div className="flex items-center justify-between">
+              <Typography className="text-gray-700" variant="h5">
+                  Modifier post
+              </Typography>
+              <div className="flex items-cente gap-2">
+                  <Typography variant="caption-3">
+                      Tu veux voir la liste de tes posts precedents?
+                  </Typography>
+                  <Typography theme="primary" variant="caption-3">
+                      <Link href="/meu-espaco/post">
+                          Mes posts
+                      </Link>
+                  </Typography>
+              </div>
+          </div>
+          <UserEditPostForm form={form} />
+        </Box>
+      </div>
+    </Container>
+  );
+};

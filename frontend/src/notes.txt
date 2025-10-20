@@ -1,0 +1,44 @@
+ERRO EXPLICADO
+Por isso o TypeScript reclama: um FC precisa retornar algo que seja ReactNode (<div>...</div> etc.), 
+mas o seu hook retorna { value, setValue, toggle }.
+
+‼️ FC só serve se for pra retornar código visual!!
+‼️ HOOK só serve pra retornar função/estado
+Ah, entendi 👀 — o erro vem do fato de você ter tentado tipar um hook como se fosse um React component (FC).
+O que aconteceu
+FC (FunctionComponent) é um tipo do React para componentes de UI que retornam JSX.
+Seu useToggle não é um componente, mas sim um hook (ele retorna funções/estado, não JSX).
+
+
+
+FIREBASE
+npm i firebase
+create a src > config > firebase-config.js file. The config folder also needs to be created.
+Firebase website:
+    Create a project   
+    Add </> web app (um só projeto pode ter múltiplos apps) → um código é gerado (como o abaixo), copie-o e salve
+    Vá em Authentication > Sign-in method e permita email/password
+Cole o código no arquivo firebase-config.js já criado
+Adicione a parte auth
+npm install --save react-toastify
+
+
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAJebaMhs2uJ4GUOw_Z1PBtYSsTe0V4FmE",
+  authDomain: "codermonkeysproj.firebaseapp.com",
+  projectId: "codermonkeysproj",
+  storageBucket: "codermonkeysproj.firebasestorage.app",
+  messagingSenderId: "901848016103",
+  appId: "1:901848016103:web:8b3c62bb1961805a276e42"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+

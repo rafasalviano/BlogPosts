@@ -1,0 +1,49 @@
+import { useState } from "react"
+import { RegisterView } from "./Register.view"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { RegisterFormFieldsType } from "@/types/forms"
+import { useToggle } from "@/hooks/use-toggle"
+import { firebaseCreateUser } from "@/api/Authentication"
+import { toast } from "react-toastify"
+
+// error is a 2-element object. 2 key-value strings, code and message
+// But by writing "value: isLoading", you’re saying: object destructuring + rename
+// “Take the property value from that object and locally call it isLoading.”
+
+export const RegisterContainer = () => {
+    const {value: isLoading, setValue: setIsLoading} = useToggle ({ initial: false})
+    const { register, formState: { errors }, setError, reset, handleSubmit } = useForm<RegisterFormFieldsType>()
+    
+    // after I turn Loading on, I necessarily turn it off, it doesn't matter if there's an error or not
+    // I do it on a second function
+
+    // const hCUA  → turn it off, show error, show success message. async brings back an object
+
+    const handleCreateUserAuthenticate = async ({email, password, how_did_hear}: RegisterFormFieldsType) => {
+        const {error, data} = await firebaseCreateUser(email, password) || {}
+        setIsLoading(false)
+        if (error) {
+            toast.error(error.message)
+            return
+        }
+        toast.success("Bienvenu sur l'app des singes codeurs")
+        reset()
+    }
+
+    const onSubmit: SubmitHandler<RegisterFormFieldsType> = async (formData) => {
+        console.log("formData",formData)
+        setIsLoading(true)
+        //custom error
+        /*
+        const {password} = formData
+        if(password.length <= 4) {
+            setError("password", {type:"manual", message:"Ton mot de passe doit comporter au minimum 6 caractères" })
+            return
+        }
+        handleCreateUserAuthenticate(formData)
+        */
+    }
+    return (
+        <RegisterView form={{ isLoading, errors, register, onSubmit, handleSubmit }} />
+    )
+}
