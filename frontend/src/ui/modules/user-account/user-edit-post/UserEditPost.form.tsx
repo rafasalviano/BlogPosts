@@ -14,7 +14,7 @@ export const UserEditPostForm: FC<IUserEditPostFormProps> = ({ form }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
       <Input
-        placeholder="Titre"
+        placeholder="Título"
         type="text"
         id="post_title"
         register={register}
@@ -25,7 +25,7 @@ export const UserEditPostForm: FC<IUserEditPostFormProps> = ({ form }) => {
         autoFocus={true}
       />
       <TextArea
-        placeholder="Quelles sont tes pensées...?"
+        placeholder="Sobre o que está pensando...?"
         type="text"
         id="post"
         register={register}

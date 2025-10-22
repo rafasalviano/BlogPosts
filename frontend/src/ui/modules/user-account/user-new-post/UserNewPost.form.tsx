@@ -13,7 +13,7 @@ export const UserNewPostForm:FC<IUserNewPostFormProps> = ({form}) => {
     return(
         <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
             <Input 
-                placeholder="Titre" 
+                placeholder="Título" 
                 type={"text"} 
                 id={"post_title"} 
                 register={register} 
@@ -23,7 +23,7 @@ export const UserNewPostForm:FC<IUserNewPostFormProps> = ({form}) => {
                 className="font-extrabold text-4xl text-gray-800"
             />
             <TextArea 
-                placeholder="Quelles sont tes pensées...?" 
+                placeholder="Sobre o que está pensando...?" 
                 type={"text"} 
                 id={"post"} 
                 register={register} 

@@ -25,13 +25,13 @@ public class PostController : ControllerBase
     [HttpPost("seed")]
     public async Task<IActionResult> SeedPosts()
     {
-        var faker = new Faker<Post>() //“Faker” is the main class inside the Bogus library
+        var faker = new Faker<Post>() // Faker é a classe principal na library Bogus
             .RuleFor(p => p.Title, f => f.Lorem.Sentence(5))
             .RuleFor(p => p.Content, f => f.Lorem.Paragraphs(3))
             .RuleFor(p => p.CreatedAt, f => DateTime.UtcNow)
             .RuleFor(p => p.UpdatedAt, f => DateTime.UtcNow);
 
-        var posts = faker.Generate(500); // generate 500 fake posts
+        var posts = faker.Generate(500);
         foreach (var post in posts)
         {
             await _service.CreateAsync(post);
@@ -62,6 +62,7 @@ public class PostController : ControllerBase
         return post is null ? NotFound() : Ok(post);
     }
 
+    // Mede o tamanho do JSON serializado em bytes, antes e depois de compressão Brotli.
     [HttpGet("compare")]
     public async Task<IActionResult> CompareCompression()
     {

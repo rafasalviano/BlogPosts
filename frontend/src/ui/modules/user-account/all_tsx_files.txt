@@ -293,7 +293,7 @@ export const UserEditPostForm: FC<IUserEditPostFormProps> = ({ form }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
       <Input
-        placeholder="Titre"
+        placeholder="Título"
         type="text"
         id="post_title"
         register={register}
@@ -411,7 +411,7 @@ export const UserNewPostForm:FC<IUserNewPostFormProps> = ({form}) => {
     return(
         <form onSubmit={handleSubmit(onSubmit)} className="pt-8 pb-5 space-y-4">
             <Input 
-                placeholder="Titre" 
+                placeholder="Título" 
                 type={"text"} 
                 id={"post_title"} 
                 register={register} 
@@ -491,7 +491,7 @@ export const UserNewPostView: FC<IUserNewPostViewProps> = ({form}) => {
 //             <Typography variant="h4" theme="gray">Nouveau Post</Typography>
 //             <div className="flex justify-center pt-20 pb-40">
 //                 <TextBox>
-//                     <Input placeholder={""} id={"email"} register={undefined} errors={undefined} isLoading={false}>Titre</Input>
+//                     <Input placeholder={""} id={"email"} register={undefined} errors={undefined} isLoading={false}>Título</Input>
 //                     <textarea className="w-full h-full resize-none outline-none placeholder-gray-700 placeholder:text-lg" placeholder="Il y en a quoi dans ta tête...?" />
 //                 </TextBox>
 //             </div>

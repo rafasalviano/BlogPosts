@@ -14,7 +14,7 @@ J'ai un tableau d'objets
 Je vais maper un tableau et envoyer chaque element à un deuxième composant qui
 les reçoit comme un paramètre.
 Dans ce deuxième composant, je retourne un div avec deux Typography.
-Dans la première, le titre.
+Dans la première, le Título.
 Dans la deuxième, je mape le sub-tableau, avec une div qui contient 2 conditionnelles
 Il faut retourner une seule balise avec key={uuidv4()} dedans. Cette balise pourra être div ou un composant.
 À condition qu'elle soit unique

@@ -20,8 +20,9 @@ export interface IButtonProps {
   disabled?: boolean;
   isLoading?: boolean;
   children?: React.ReactNode;
-  fullWidth?: boolean
-  action?: Function
+  fullWidth?: boolean;
+  action?: Function;
+  className?: string
 }
 
 const variantStyles: Record<ButtonVariantType, (iconTheme: ButtonIconThemeType)=> string> = {
@@ -80,7 +81,8 @@ export const Button: FC<IButtonProps> = ({
     isLoading = false,
     children,
     fullWidth,
-    action = () => {}
+    action = () => {},
+    className
 }) => {    
     const handleClick = () => {
             if(action) {
@@ -98,7 +100,8 @@ export const Button: FC<IButtonProps> = ({
                 isLoading && "cursor-wait",
                 "relative hover:opacity-75",
                 "disabled:opacity-75 disabled:cursor-not-allowed",
-                fullWidth && "w-full"
+                fullWidth && "w-full",
+                className
             )}
             onClick={handleClick}
             disabled={disabled || isLoading} /* se deixasse assim, todos ficariam cinza igualmente */

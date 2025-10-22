@@ -19,15 +19,15 @@ export const UserNewPostView: FC<IUserNewPostViewProps> = ({form}) => {
                     <Box>
                         <div className="flex items-center justify-between">
                             <Typography className="text-gray-700" variant="h5">
-                                Nouveau Post
+                                Novo Post
                             </Typography>
                             <div className="flex items-cente gap-2">
                                 <Typography variant="caption-3">
-                                    Tu veux voir la liste de tes posts precedents?
+                                    Você quer ver as lista completa de posts?
                                 </Typography>
                                 <Typography theme="primary" variant="caption-3">
                                     <Link href="/meu-espaco/post">
-                                        Mes posts
+                                        Meus posts
                                     </Link>
                                 </Typography>
                             </div>
@@ -53,7 +53,7 @@ export const UserNewPostView: FC<IUserNewPostViewProps> = ({form}) => {
 //             <Typography variant="h4" theme="gray">Nouveau Post</Typography>
 //             <div className="flex justify-center pt-20 pb-40">
 //                 <TextBox>
-//                     <Input placeholder={""} id={"email"} register={undefined} errors={undefined} isLoading={false}>Titre</Input>
+//                     <Input placeholder={""} id={"email"} register={undefined} errors={undefined} isLoading={false}>Título</Input>
 //                     <textarea className="w-full h-full resize-none outline-none placeholder-gray-700 placeholder:text-lg" placeholder="Il y en a quoi dans ta tête...?" />
 //                 </TextBox>
 //             </div>
