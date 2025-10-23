@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-toastify";
 import { UserMedicaoLocalView } from "./UserMedicaoLocal.view";
+import { useRouter } from "next/router";
 
 type ApiPost = {
   id?: string;
@@ -19,11 +20,13 @@ type TestResult = {
 };
 
 export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerProps) => {
+  const router = useRouter()
   const [status, setStatus] = useState("Inativo");
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<TestResult[]>([]);
+  const [isSeeding, setIsSeeding] = useState(false);
 
-  const tests = ["paginacao", "sempaginacao", "comprimido", "padrao"];
+  const tests = ["paginacao", "sempaginacao", "comprimido", "semcompressao"];
 
   const runAllTests = async () => {
     setResults([]);
@@ -78,6 +81,46 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
     setIsRunning(false);
   };
 
+  const handleSeed = useCallback(async () => {
+    const yes = window.confirm("Você deseja criar 500 posts no banco de dados?");
+    if (!yes) return;
+
+    try {
+      setIsSeeding(true);
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5027";
+      const res = await fetch(`${base}/api/post/seed`, { method: "POST" });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      toast.success(data.message || "500 posts foram criados com sucesso.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Falha em criar posts");
+    } finally {
+      setIsSeeding(false);
+      router.reload();
+    }
+  }, [router]);
+
+  const formatCreatedAt = ({ createdAt }: ApiPost) => {
+    const createdAtFormat = createdAt
+      ?.replace(/-|T/g, match => (match === "-" ? " / " : " at "))
+      .slice(0, 23);
+    if (createdAtFormat) {
+      let hourChars = parseInt(createdAtFormat.slice(18, 20)) - 3;
+      if (hourChars < 0) hourChars = hourChars + 24;
+      let hourCharsConv = String(hourChars);
+      let charArray = createdAtFormat.split("");
+      charArray[18] = hourCharsConv.split("")[0];
+      charArray[19] = hourCharsConv.split("")[1];
+      hourCharsConv = String(charArray).replace(/,/g, "");
+      return hourCharsConv;
+    }
+  };
+
   return (
     <UserMedicaoLocalView
       posts={posts}
@@ -86,6 +129,8 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
       isRunning={isRunning}
       runAllTests={runAllTests}
       runSingleTest={runSingleTest}
+      onSeed={handleSeed}
+      formatCreatedAt={formatCreatedAt}
     />
   );
 };

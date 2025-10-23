@@ -78,7 +78,7 @@ export const UserAllPostsContainer = ({ posts }: IUserAllPostsContainerProps) =>
     }
   }, []);
 
-  // --- Cálculos ---
+  // Cálculos
   const ratio =
     uncompressed && compressed ? ((compressed / uncompressed) * 100).toFixed(1) : null;
   const whUncompressed =
