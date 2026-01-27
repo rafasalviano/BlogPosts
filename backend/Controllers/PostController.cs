@@ -3,7 +3,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 
-using Bogus; // criador de blablabla
+using Bogus; // criador de blablabla pra encher post
 using Microsoft.AspNetCore.Mvc;
 using WebApiMongoDbDemo.Domain;
 using WebApiMongoDbDemo.Domain.Interfaces;

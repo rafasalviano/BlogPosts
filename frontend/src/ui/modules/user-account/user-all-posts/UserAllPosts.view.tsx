@@ -17,14 +17,12 @@ interface IUserAllPostsViewProps {
   onPagination: () => void;
   onSeed: () => void;
   onDeleteAll: () => void;
-
   uncompressed: number | null;
   compressed: number | null;
   percentSaved: string | null;
   whUncompressed: number | null;
   whCompressed: number | null;
   whSaved: string | null;
-
   unpaginated: number | null;
   paginated: number | null;
   percentSavedPag: string | null;

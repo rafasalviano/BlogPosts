@@ -1,6 +1,4 @@
 import { FC } from "react"
-import { Navigation } from "../navigation/Navigation"
-import { Footer } from "../navigation/Footer"
 import { Breadcrumbs } from "../breadcrumbs/Breadcrumbs"
 import { UserAccountNavigation } from "../navigation/UserAccountNavigation"
 import { Container } from "../container/Container"

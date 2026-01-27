@@ -9,8 +9,6 @@ import { ActiveLink } from "@/ui/components/navigation/Active-link";
 import { Navigation } from "@/ui/components/navigation/Navigation";
 import { Footer } from "@/ui/components/navigation/Footer";
 import { Layout } from "@/ui/components/layout/layout";
-import { LandingPageView } from "@/ui/modules/landing-page/Landing-page.view";
-import { LandingPageContainer } from "@/ui/modules/landing-page/Landing-page.container";
 import { SessionStatusTypes } from "@/constants/session-status-types";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,7 +17,7 @@ export default function Home() {
   return (
       <>
         <Seo title="Coders Monkeys" description="Description..." />
-          <Layout  sessionStatus={SessionStatusTypes.GUEST}><LandingPageContainer /></Layout>
+          <Layout  sessionStatus={SessionStatusTypes.GUEST}>Hello</Layout>
       </>
   );
 }

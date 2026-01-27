@@ -27,7 +27,7 @@ namespace WebApiMongoDbDemo.Controllers
 
             try
             {
-                // 👉 marca o horário inicial da medição
+                // marca o horário inicial da medição
                 var inicio = DateTime.Now;
 
                 // URL do backend para puxar os posts conforme cenário
@@ -37,7 +37,7 @@ namespace WebApiMongoDbDemo.Controllers
 
                 // escolhe o tipo de requisição
                 if (config.Scenario == "paginacao")
-                    url = $"{baseUrl}?page=1&pageSize=25";
+                    url = $"{baseUrl}/paginated?page=1&take=25";
                 else if (config.Scenario == "sempaginacao")
                     url = baseUrl;
                 else if (config.Scenario == "comprimido")
@@ -60,15 +60,15 @@ namespace WebApiMongoDbDemo.Controllers
 
                 await Task.Delay(1500); // espera 1500 ms para powermetrics estabilizar
 
-                // 👉 marca horário de início da requisição
+                // marca horário de início da requisição
                 var inicioHttp = DateTime.Now;
                 await client.GetAsync(url);
-                // 👉 marca horário de término da requisição
+                // marca horário de término da requisição
                 var fimHttp = DateTime.Now;
 
                 proc.WaitForExit();
 
-                // 👉 marca o horário final da medição
+                // marca o horário final da medição
                 var fim = DateTime.Now;
 
                 // Rodar gawk para extrair dados CPU/GPU + horário

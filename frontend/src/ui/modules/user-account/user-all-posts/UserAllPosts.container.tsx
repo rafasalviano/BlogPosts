@@ -16,7 +16,7 @@ interface IUserAllPostsContainerProps {
 
 // Energy constant: ~0.05 kWh/GB = 50 Wh/GB
 // https://www.researchgate.net/publication/266968255_The_Energy_Intensity_of_the_Internet_Edge_and_Core_Networks
-const WH_PER_GB = 50 * 1000; // Wh per GB
+const WH_PER_GB = 50; // Wh per GB
 
 export const UserAllPostsContainer = ({ posts }: IUserAllPostsContainerProps) => {
   const router = useRouter();
@@ -91,9 +91,10 @@ export const UserAllPostsContainer = ({ posts }: IUserAllPostsContainerProps) =>
       : null;
   const percentSaved =
     ratio !== null ? (100 - parseFloat(ratio)).toFixed(1) : null;
-
+  
   const ratioPag =
     unpaginated && paginated ? ((paginated / unpaginated) * 100).toFixed(1) : null;
+  // converte bytes para gigabytes
   const whUnpaginated =
     unpaginated !== null ? (unpaginated / 1e9) * WH_PER_GB : null;
   const whPaginated =
@@ -103,9 +104,9 @@ export const UserAllPostsContainer = ({ posts }: IUserAllPostsContainerProps) =>
       ? (whUnpaginated - whPaginated).toFixed(2)
       : null;
   const percentSavedPag =
-    ratioPag !== null ? (100 - parseFloat(ratioPag)).toFixed(1) : null;
+    ratioPag !== null ? (100 - parseFloat(ratioPag)).toFixed(1) : null; // If either value is missing → returns null
 
-  // --- Seed e Delete ---
+  // Seed e Deletar
   const handleSeed = useCallback(async () => {
     const yes = window.confirm("Você deseja criar 500 posts no banco de dados?");
     if (!yes) return;
