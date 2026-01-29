@@ -7,7 +7,7 @@ namespace WebApiMongoDbDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MetricsController : ControllerBase
+    public class MetricsController2 : ControllerBase
     {
         // DTO de entrada
         public record TestConfig(string Scenario);
@@ -27,6 +27,9 @@ namespace WebApiMongoDbDemo.Controllers
 
             try
             {
+                // marca o horário inicial da medição
+                var inicio = DateTime.Now;
+
                 // URL do backend para puxar os posts conforme cenário
                 var baseUrl = "http://localhost:5027/api/post";
                 string url = baseUrl;
@@ -43,7 +46,7 @@ namespace WebApiMongoDbDemo.Controllers
                     client.DefaultRequestHeaders.Add("Accept-Encoding", "identity");
 
                 // inicia powermetrics - intervalo 10ms, 20 amostras, observa-se que em 100ms GET /posts é realizado
-                var powermetricsCmd = $"sudo powermetrics --samplers cpu_power,gpu_power -i 10 -n 320 > {fileName}";
+                var powermetricsCmd = $"sudo powermetrics --samplers cpu_power,gpu_power -i 10 -n 20 > {fileName}";
                 var psi = new ProcessStartInfo
                 {
                     FileName = "/bin/bash",
@@ -52,27 +55,22 @@ namespace WebApiMongoDbDemo.Controllers
                     UseShellExecute = true
                 };
                 
-                
-
-
-                var proc = Process.Start(psi)!; // start powermetrics
                 var sw = Stopwatch.StartNew();
-                var inicioMs = 0L; // measurement start at sw start
+
+                var proc = Process.Start(psi)!;
 
                 await Task.Delay(1500);
 
-                var inicioHttpMs = sw.ElapsedMilliseconds;
-                using var resp = await client.GetAsync(url);
-                await resp.Content.ReadAsByteArrayAsync();
-                var fimHttpMs = sw.ElapsedMilliseconds;
-
+                var inicioHttp = sw.ElapsedMilliseconds;
+                using var resp = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                await resp.Content.ReadAsByteArrayAsync(); // se você quer medir download total
+                var fimHttp = sw.ElapsedMilliseconds;
 
                 await Task.Delay(1500);
 
                 await proc.WaitForExitAsync();
 
-                var fimMs = sw.ElapsedMilliseconds;
-
+                var fim = sw.ElapsedMilliseconds;
 
 
                 // roda powermetrics em paralelo à chamada http
@@ -97,15 +95,11 @@ namespace WebApiMongoDbDemo.Controllers
                 // Rodar gawk para extrair dados CPU/GPU + horário
                 // Adicionamos "Time" como primeira coluna.
                 // Usamos "date" no shell para gerar o timestamp em HH:MM:SS.mmm
-                var sampleIntervalMs = 10;
-
                 var gawkCmd =
                     $"echo 'Time CPU_mW GPU_mW Total_mW' > \"{csvFile}\" && " +
-                    $"gawk 'BEGIN{{i=0; cpu=\"\"; gpu=\"\"; total=\"\";}} " +
-                    $"/CPU Power:/ {{match($0, /([0-9.]+) mW/, a); cpu=a[1];}} " +
+                    $"gawk '/CPU Power:/ {{cmd=\"gdate +%H:%M:%S.%3N\"; cmd | getline t; close(cmd); match($0, /([0-9.]+) mW/, a); cpu=a[1];}} " +
                     $"/GPU Power:/ {{match($0, /([0-9.]+) mW/, b); gpu=b[1];}} " +
-                    $"/Combined Power/ {{match($0, /([0-9.]+) mW/, c); total=c[1]; " +
-                    $"print (i*{sampleIntervalMs}), cpu, gpu, total; i++;}}' \"{fileName}\" >> \"{csvFile}\"";
+                    $"/Combined Power/ {{match($0, /([0-9.]+) mW/, c); total=c[1]; print t, cpu, gpu, total;}}' \"{fileName}\" >> \"{csvFile}\"";
 
                 var psi2 = new ProcessStartInfo
                 {
@@ -121,8 +115,7 @@ namespace WebApiMongoDbDemo.Controllers
                 }
                 // 👉 Acrescenta os horários HTTP no final do CSV
                 await System.IO.File.AppendAllTextAsync(csvFile,
-                    $"\nHTTP_START {inicioHttpMs}\nHTTP_END {fimHttpMs}\n");
-
+                    $"\nHTTP_START {inicioHttp:HH:mm:ss.fff}\nHTTP_END {fimHttp:HH:mm:ss.fff}");
 
 
                 if (!System.IO.File.Exists(csvFile))
@@ -132,13 +125,11 @@ namespace WebApiMongoDbDemo.Controllers
                 return Ok(new
                 {
                     csvFile = fullPath,
-                    inicio = inicioMs.ToString(),
-                    inicioHttp = inicioHttpMs.ToString(),
-                    fimHttp = fimHttpMs.ToString(),
-                    fim = fimMs.ToString()
+                    inicio = inicio.ToString("HH:mm:ss.fff"),
+                    inicioHttp = inicioHttp.ToString("HH:mm:ss.fff"),
+                    fimHttp = fimHttp.ToString("HH:mm:ss.fff"),
+                    fim = fim.ToString("HH:mm:ss.fff")
                 });
-
-
             }
             catch (Exception ex)
             {

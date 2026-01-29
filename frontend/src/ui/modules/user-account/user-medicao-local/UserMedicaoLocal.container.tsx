@@ -33,6 +33,7 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
 
   const tests = ["paginacao", "sempaginacao", "comprimido", "semcompressao"];
 
+  // tudo junto
   const runAllTests = async () => {
     setResults([]);
     setIsRunning(true);
@@ -75,6 +76,7 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
     setIsRunning(false);
   };
 
+  // um teste por vez
   const runSingleTest = async (scenario: string) => {
     setStatus(`✏️ Executando o teste ${scenario}...`);
     setIsRunning(true);
