@@ -31,7 +31,7 @@ public class PostController : ControllerBase
             .RuleFor(p => p.CreatedAt, f => DateTime.UtcNow)
             .RuleFor(p => p.UpdatedAt, f => DateTime.UtcNow);
 
-        var posts = faker.Generate(500);
+        var posts = faker.Generate(5000);
         foreach (var post in posts)
         {
             await _service.CreateAsync(post);

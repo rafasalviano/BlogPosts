@@ -1,0 +1,188 @@
+
+
+                                      PAGES
+
+
+----- ./index.tsx -----
+
+import { SessionStatusTypes } from "@/constants/session-status-types";
+import { Layout } from "@/ui/components/layout/layout";
+import { Seo } from "@/ui/components/seo/Seo";
+import { UserAccountContainer } from "@/ui/modules/user-account/user-profile/UserAccount.container";
+
+export default function MonEspace() {
+    return (
+        <>
+            <Layout withSidebar  sessionStatus={SessionStatusTypes.REGISTERED}><UserAccountContainer/></Layout>
+            <Seo
+                title="Mon espace"
+                description="Description de la page"
+            />
+        </>
+    )
+}
+
+
+
+
+
+----- ./post/index.tsx -----
+
+import { SessionStatusTypes } from "@/constants/session-status-types";
+import { Layout } from "@/ui/components/layout/layout";
+import { Seo } from "@/ui/components/seo/Seo";
+import { UserAllPostsContainer } from "@/ui/modules/user-account/user-all-posts/UserAllPosts.container";
+import { GetServerSideProps } from "next";
+
+type ApiPost = {
+  id?: string;
+  title?: string;
+  content?: string;
+  createdAt?: string;
+};
+
+interface IPostsPageProps {
+  posts: ApiPost[];
+}
+
+export default function PostsPage({ posts }: IPostsPageProps) {
+  return (
+    <>
+      <Layout withSidebar  sessionStatus={SessionStatusTypes.REGISTERED}><UserAllPostsContainer posts={posts} /></Layout>
+      <Seo
+          title="Meu post"
+          description="Créer un nouveau post"
+      />
+    </>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const base = process.env.API_BASE_URL || "http://localhost:5027";
+
+  const res = await fetch(`${base}/api/post`);
+  if (!res.ok) {
+    return { props: { posts: [] } };
+  }
+
+  const posts: ApiPost[] = await res.json();
+  return { props: { posts } };
+};
+
+
+
+
+----- ./post/[id].tsx -----
+
+// pages/post/[id].tsx
+import { GetServerSideProps } from "next";
+import { UserPostContainer } from "@/ui/modules/user-account/user-posts/UserPost.container";
+import { NewPostFormFieldsType } from "@/types/forms";
+import { Layout } from "@/ui/components/layout/layout";
+import { SessionStatusTypes } from "@/constants/session-status-types";
+import { Seo } from "@/ui/components/seo/Seo";
+
+type ApiPost = { id?: string; title?: string; content?: string; createdAt?: string };
+type UiPost = { id?: string; post_title: string; post: string };
+
+
+export default function PostPage({ post }: { post: UiPost }) {
+  return (
+    <>
+      <Layout withSidebar  sessionStatus={SessionStatusTypes.REGISTERED}><UserPostContainer post={post} /></Layout>
+      <Seo
+          title="Meu post"
+          description="Créer un nouveau post"
+      />
+    </>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { id } = ctx.query;
+  const base = process.env.API_BASE_URL || "http://localhost:5027";
+
+  const res = await fetch(`${base}/api/post/${id}`);
+  if (!res.ok) return { notFound: true };
+
+  const apiPost: ApiPost = await res.json();
+
+  // Map backend → UI form shape expected by UserPostContainer
+  const post: UiPost = {
+    id: apiPost.id,
+    post_title: apiPost.title ?? "",
+    post: apiPost.content ?? "",
+  };
+
+  return { props: { post } };
+};
+
+
+
+
+
+
+----- ./post/[id]/edit.tsx -----
+
+// pages/post/[id]/edit.tsx
+import { GetServerSideProps } from "next";
+import { UserEditPostContainer } from "@/ui/modules/user-account/user-edit-post/UserEditPost.container";
+import { Seo } from "@/ui/components/seo/Seo";
+import { Layout } from "@/ui/components/layout/layout";
+import { SessionStatusTypes } from "@/constants/session-status-types";
+
+type ApiPost = { id?: string; Id?: string; title?: string; content?: string };
+export type FormPost = { id?: string; post_title: string; post: string };
+
+export default function EditPostPage({ post }: { post: FormPost }) {
+  return (
+    <>
+      <Layout withSidebar  sessionStatus={SessionStatusTypes.REGISTERED}><UserEditPostContainer post={post} /></Layout>
+      <Seo
+          title="Edit post"
+          description="Créer un nouveau post"
+      />
+    </>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { id } = ctx.query;
+  const base = process.env.API_BASE_URL || "http://localhost:5027";
+
+  const res = await fetch(`${base}/api/post/${id}`);
+  if (!res.ok) return { notFound: true };
+
+  const api: ApiPost = await res.json();
+  const post: FormPost = {
+    id: api.id ?? api.Id,
+    post_title: api.title ?? "",
+    post: api.content ?? "",
+  };
+
+  return { props: { post } };
+};
+
+
+
+
+
+
+----- ./new-post.tsx -----
+
+import { SessionStatusTypes } from "@/constants/session-status-types";
+import { Layout } from "@/ui/components/layout/layout";
+import { Seo } from "@/ui/components/seo/Seo";
+import { UserNewPostContainer } from "@/ui/modules/user-account/user-new-post/UserNewPost.container";
+
+export default function NouveauPost() {
+    return (
+        <>
+            <Layout withSidebar  sessionStatus={SessionStatusTypes.REGISTERED}><UserNewPostContainer/ ></Layout>
+            <Seo
+                title="Nouveau Post"
+                description="Créer un nouveau post"
+            />
+        </>
+    )
+}

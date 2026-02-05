@@ -88,7 +88,7 @@ export const UserAllPostsView = ({
 
       <div className="flex flex-row justify-between">
         <div className="flex flex-row gap-5">
-          <Button action={onSeed}>Crie 500 posts</Button>
+          <Button action={onSeed}>Crie 5000 posts</Button>
           <Button variant="danger" action={onDeleteAll}>Delete todos os posts</Button>
         </div>
         <div className="flex flex-row gap-2">

@@ -43,9 +43,17 @@
               "target": "Package",
               "version": "[35.6.4, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.1.0, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.23.1, )"
+            },
+            "ScottPlot": {
+              "target": "Package",
+              "version": "[5.1.57, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

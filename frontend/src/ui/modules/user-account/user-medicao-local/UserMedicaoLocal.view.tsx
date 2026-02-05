@@ -106,12 +106,12 @@ export const UserMedicaoLocalView = ({
 
         {/* 🔹 Resultados medidos */}
         <div className="grid grid-cols-6 border border-gray-300 mt-8 text-sm">
-          <div className="font-semibold bg-gray-100 p-3">Cenário</div>
+          <div className="font-semibold bg-gray-100 p-3 text">Cenário</div>
           <div className="font-semibold bg-gray-100 p-3">CSV salvo em</div>
+          <div className="font-semibold bg-gray-100 p-3">Início pw</div>
           <div className="font-semibold bg-gray-100 p-3">Início HTTP</div>
           <div className="font-semibold bg-gray-100 p-3">Fim HTTP</div>
-          <div className="font-semibold bg-gray-100 p-3">Início</div>
-          <div className="font-semibold bg-gray-100 p-3">Fim</div>
+          <div className="font-semibold bg-gray-100 p-3">Fim pw</div>
 
           {results.map((r, i) => (
             <React.Fragment key={`${r.scenario}-${r.inicio ?? i}`}>
@@ -119,9 +119,9 @@ export const UserMedicaoLocalView = ({
               <div className="p-3 break-all">
                 <code>{r.csvFile}</code>
               </div>
+              <div className="p-3">{r.inicio}</div>
               <div className="p-3">{r.inicioHttp}</div>
               <div className="p-3">{r.fimHttp}</div>
-              <div className="p-3">{r.inicio}</div>
               <div className="p-3">{r.fim}</div>
             </React.Fragment>
           ))}
@@ -133,7 +133,7 @@ export const UserMedicaoLocalView = ({
           Você tem {posts.length} posts
         </Typography>
 
-        <ul className="space-y-2 list-none">
+        {/* <ul className="space-y-2 list-none">
           {posts.map((post) => (
             <li key={post.id}>
               <Box className="p-4 border rounded hover:bg-gray-50">
@@ -153,7 +153,7 @@ export const UserMedicaoLocalView = ({
               </Box>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </>
   );

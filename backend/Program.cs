@@ -32,6 +32,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IPowermetricsProcessor, PowermetricsProcessor>();
+builder.Services.AddScoped<IPowermetricsMeasurement, PowermetricsMeasurement>();
+
 
 builder.Services.AddCors(opt =>
 {
