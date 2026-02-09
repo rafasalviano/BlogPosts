@@ -5,6 +5,7 @@ using WebApiMongoDbDemo.Data;
 using WebApiMongoDbDemo.Domain.Interfaces;
 using WebApiMongoDbDemo.Application;
 
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
