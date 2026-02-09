@@ -1,0 +1,28 @@
+src/
+├── WebApi/
+│   ├── Controllers/
+│   │   └── PostsController.cs
+│   └── Dtos/
+│       └── PostDto.cs
+│
+├── Application/
+│   ├── Services/
+│   │   └── CreatePostService.cs
+│   └── Mappers/
+│       └── PostMapper.cs   (opcional)
+│
+├── Domain/
+│   └── Entities/
+│       └── Post.cs
+│   └── Interfaces/
+|       └── Ialgo.cs
+├── Infrastructure/
+│   ├── Persistence/
+│   │   ├── Documents/
+│   │   │   └── PostDocument.cs
+│   │   ├── Repositories/
+│   │   │   └── PostRepository.cs
+│   │   └── Mappers/
+│   │       └── PostDocumentMapper.cs
+│   └── Database/
+│       └── MongoContext.cs

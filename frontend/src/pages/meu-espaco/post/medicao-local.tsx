@@ -29,14 +29,27 @@ export default function MedicaoLocal({ posts }: IPostsPageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const base = process.env.API_BASE_URL || "http://localhost:5027";
+  console.time("api-post");
 
-  const res = await fetch(`${base}/api/post`);
-  if (!res.ok) {
+  try {
+    const base = process.env.API_BASE_URL || "http://127.0.0.1:5027";
+    const res = await fetch(`${base}/api/post`);
+
+    console.timeEnd("api-post");
+
+    if (!res.ok) {
+      console.error("API returned status:", res.status);
+      return { props: { posts: [] } };
+    }
+
+    const posts_oldest_first: ApiPost[] = await res.json();
+    const posts = posts_oldest_first.reverse();
+
+    return { props: { posts } };
+
+  } catch (err) {
+    console.timeEnd("api-post");
+    console.error("SSR fetch failed:", err);
     return { props: { posts: [] } };
   }
-
-  const posts_oldest_first: ApiPost[] = await res.json();
-  const posts = posts_oldest_first.reverse()
-  return { props: { posts } };
 };

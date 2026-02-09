@@ -68,8 +68,6 @@ namespace WebApiMongoDbDemo.Application
 
             return (inicioHttpMs.ToString(), fimHttpMs.ToString(), csvFile);
         
+        }
     }
 }
-}
-
-

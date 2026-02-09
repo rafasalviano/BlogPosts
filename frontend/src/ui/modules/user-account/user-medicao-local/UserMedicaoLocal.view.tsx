@@ -120,8 +120,8 @@ export const UserMedicaoLocalView = ({
                 <code>{r.csvFile}</code>
               </div>
               <div className="p-3">{r.inicio}</div>
-              <div className="p-3">{r.inicioHttp}</div>
-              <div className="p-3">{r.fimHttp}</div>
+              <div className="p-3">{r.inicioHttp} ms</div>
+              <div className="p-3">{r.fimHttp} ms</div>
               <div className="p-3">{r.fim}</div>
             </React.Fragment>
           ))}

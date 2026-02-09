@@ -39,7 +39,7 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
     setIsRunning(true);
 
     for (const t of tests) {
-      setStatus(`✏️ Executando o teste ${t}...`);
+      setStatus(`→ Executando o teste ${t}...`);
 
       try {
         const res = await fetch("http://localhost:5027/api/metrics/measure", {
@@ -88,7 +88,25 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
         body: JSON.stringify({ scenario }),
       });
 
+      // teste
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Backend ${res.status}: ${text}`);
+      }
+
       const data = await res.json();
+
+      await fetch("http://localhost:5027/api/metrics-plot/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ CsvFile: data.csvFile }),
+      });
+
+      // await fetch("http://localhost:5027/api/metrics-report/generate", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ CsvFile: data.csvFile }),
+      // });
 
       setResults((prev) => [
         ...prev,

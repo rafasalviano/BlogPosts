@@ -5,7 +5,9 @@ using WebApiMongoDbDemo.Data;
 using WebApiMongoDbDemo.Domain.Interfaces;
 using WebApiMongoDbDemo.Application;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // --- Compression setup ---
 builder.Services.AddResponseCompression(options =>
@@ -34,6 +36,8 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPowermetricsProcessor, PowermetricsProcessor>();
 builder.Services.AddScoped<IPowermetricsMeasurement, PowermetricsMeasurement>();
+builder.Services.AddScoped<IMetricsPlotService, MetricsPlotService>();
+builder.Services.AddScoped<IMetricsReportService, MetricsReportService>();
 
 
 builder.Services.AddCors(opt =>
