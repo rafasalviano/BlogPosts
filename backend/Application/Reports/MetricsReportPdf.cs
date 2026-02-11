@@ -79,9 +79,9 @@ namespace WebApiMongoDbDemo.Application.Reports
                     Section(col, "Resultados", section =>
                     {
                         section.Item().Text($"Número de amostras: {_data.SampleCount}");
-                        section.Item().Text($"ΔT total: {_data.DeltaTSeconds:F6} s");
-                        section.Item().Text($"Energia total: {_data.EnergyTotalJ:F6} J");
-                        section.Item().Text($"Potência média total: {_data.AvgPowerTotalW:F6} W");
+                        section.Item().Text($"ΔT total: {_data.DeltaTSeconds:F4} s");
+                        section.Item().Text($"Energia total: {_data.EnergyTotalJ:F4} J");
+                        section.Item().Text($"Potência média total: {_data.AvgPowerTotalW:F4} W");
                     });
 
                     // INTERVALO HTTP
@@ -92,15 +92,15 @@ namespace WebApiMongoDbDemo.Application.Reports
 
                         Section(col, "Intervalo HTTP", section =>
                         {
-                            section.Item().Text($"HTTP_START (ms): {_data.HttpStartMs}");
-                            section.Item().Text($"HTTP_END (ms): {_data.HttpEndMs}");
-                            section.Item().Text($"Duração HTTP: {httpDuration:F6} s");
+                            section.Item().Text($"Início HTTP: {_data.HttpStartMs:F4} s");
+                            section.Item().Text($"Fim HTTP: {_data.HttpEndMs:F4} s");
+                            section.Item().Text($"Duração HTTP: {httpDuration:F4} s");
 
                             if (_data.EnergyHttpJ.HasValue)
-                                section.Item().Text($"Energia HTTP: {_data.EnergyHttpJ:F6} J");
+                                section.Item().Text($"Energia HTTP: {_data.EnergyHttpJ:F4} J");
 
                             if (_data.AvgPowerHttpW.HasValue)
-                                section.Item().Text($"Potência média HTTP: {_data.AvgPowerHttpW:F6} W");
+                                section.Item().Text($"Potência média HTTP: {_data.AvgPowerHttpW:F4} W");
                         });
                     }
                     else
