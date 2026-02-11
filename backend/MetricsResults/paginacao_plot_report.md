@@ -22,11 +22,11 @@ Potência média no intervalo ("área/ΔT"):
 ## Resultados
 - Número de amostras: **8000**
 - ΔT (duração total): **79.990000 s**
-- Energia total estimada: **29.287630 J**
-- Potência média (Energia/ΔT): **0.366141 W**
+- Energia total estimada: **38.987600 J**
+- Potência média (Energia/ΔT): **0.487406 W**
 
 ## Intervalo HTTP (marcado em vermelho no gráfico)
-- HTTP_START (ms): `1501`
-- HTTP_END (ms): `1588`
-- Duração HTTP: **0.087000 s**
+- HTTP_START (ms): `1502`
+- HTTP_END (ms): `1605`
+- Duração HTTP: **0.103000 s**
 

@@ -23,7 +23,7 @@ export const UserAccountContainer = () => {
             <Box padding_y="py-7" className="flex flex-col gap-5">
                 <div className="flex flex-col gap-1">
                     <Typography theme="primary" variant="body-lg" className="mb-5">Explicação</Typography>
-                    <Typography theme="black" variant="body-base" className="mb-1">• Meus posts - medição tela</Typography>
+                    <Typography theme="black" variant="body-base" className="mb-1">• Medição - Bytes e energia</Typography>
                     <Typography className="text-gray-700" variant="body-base">A medição é baseada na quantidade de dados enviados durante a busca de posts. Considera-se uma equivalência média de 0,051 kWh por GB transferido, de acordo com o estudo{" "}
                         <a
                             href="https://www.researchgate.net/publication/166968155_The_Energy_Intensity_of_the_Internet_Edge_and_Core_Networks"
@@ -32,12 +32,13 @@ export const UserAccountContainer = () => {
                         >
                             <em>The Energy Intensity of the Internet</em>
                         </a>.
-                        <Typography className="text-gray-700" variant="body-base">O valor é apenas uma estimativa, pois o consumo real varia conforme a intensidade energética da rede.</Typography>
+                        <Typography className="text-gray-700" variant="body-base">O valor é apenas uma estimativa, pois o consumo varia, entre outros, conforme a intensidade energética da rede. Os dados obtidos são exibidos em tela.</Typography>
+
                     </Typography>
                 </div>
                 <div className="flex flex-col gap-1">
-                    <Typography theme="black" variant="body-base" className="mb-1">• Meus posts - CPU + GPU</Typography>
-                    <Typography variant="body-base" className="text-gray-700 mb-4">A medição é feita localmente, acompanhando o uso de CPU e GPU enquanto o aplicativo busca os posts. As leituras são registradas a cada 1 segundo, salvas em arquivo .txt e depois convertidas para .csv.</Typography>
+                    <Typography theme="black" variant="body-base" className="mb-1">• Medição - CPU</Typography>
+                    <Typography variant="body-base" className="text-gray-700 mb-4">A medição é feita localmente, acompanhando o uso de CPU enquanto o aplicativo busca os posts. As leituras são registradas a cada 0,01 segundo, salvas em arquivo .txt e convertidas para .csv. Um relatório em pdf é então gerado.</Typography>
                 </div>
                 <Typography variant="body-lg" theme="primary">As 4 variações</Typography>
                 <div className="grid grid-cols-4 gap-3">
@@ -50,7 +51,7 @@ export const UserAccountContainer = () => {
                     <div className="col-span-1 space-y-1">
                         <Typography variant="body-base">Com compressão</Typography>
                         <Typography theme="gray" variant="body-base" className="max-w-40">
-                            Utiliza a compressão Brotli no backend. 
+                            Utiliza a compressão Brotli no backend. Mostra todos os posts do banco de dados. 
                         </Typography>
                     </div>
                     <div className="col-span-1 space-y-1">

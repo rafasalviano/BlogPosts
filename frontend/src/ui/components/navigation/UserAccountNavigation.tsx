@@ -38,8 +38,8 @@ export const UserAccountNavigation = () => {
     return(
         <Box className="flex flex-col gap-7 grow">
             <div className="flex flex-col gap-3">
-                <Typography weight="medium" variant="caption-2"><ActiveLink href="/meu-espaco/post">Meus posts - medicão tela</ActiveLink></Typography>
-                <Typography weight="medium" variant="caption-2"><ActiveLink href="/meu-espaco/post/medicao-local">Meus posts - CPU + GPU</ActiveLink></Typography>
+                <Typography weight="medium" variant="caption-2"><ActiveLink href="/meu-espaco/post">Medição - Bytes e energia</ActiveLink></Typography>
+                <Typography weight="medium" variant="caption-2"><ActiveLink href="/meu-espaco/post/medicao-local">Medição - CPU</ActiveLink></Typography>
                 <Typography weight="medium" variant="caption-2" className="inline">    
                     <ActiveLink href="/meu-espaco/new-post">
                         <div className="flex flex-row items-center gap-1">

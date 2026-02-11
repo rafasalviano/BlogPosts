@@ -48,7 +48,9 @@ namespace WebApiMongoDbDemo.Controllers
                         AvgPowerTotalW = analysis.AvgPowerTotalW,
 
                         HttpStartMs = analysis.HttpStartMs,
-                        HttpEndMs = analysis.HttpEndMs
+                        HttpEndMs = analysis.HttpEndMs,
+                        EnergyHttpJ = analysis.EnergyHttpJ,
+                        AvgPowerHttpW = analysis.AvgPowerHttpW
                     });
 
                 return Ok(new

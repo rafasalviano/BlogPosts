@@ -56,7 +56,7 @@ export const UserMedicaoLocalView = ({
     <>
       <div className="p-9 flex flex-col gap-2">
         <Typography className="text-gray-900 mb-10" variant="h4">
-          Medição Local de Energia
+          Medição - CPU
         </Typography>
         <Typography theme="gray" weight="medium" variant="body-lg">
           Status atual: {status}

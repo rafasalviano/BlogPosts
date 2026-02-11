@@ -18,6 +18,8 @@ namespace WebApiMongoDbDemo.Application
 
     public double? HttpStartMs { get; init; }
     public double? HttpEndMs { get; init; }
+    public double? EnergyHttpJ { get; init; }
+    public double? AvgPowerHttpW { get; init; }
     }
 
     public class MetricsPlotService : IMetricsPlotService
@@ -40,6 +42,11 @@ namespace WebApiMongoDbDemo.Application
 
             double? httpStart = null;
             double? httpEnd = null;
+            //double? httpStartS = httpStart.HasValue ? httpStart.Value / 1000.0 : null;
+            //double? httpEndS   = httpEnd.HasValue   ? httpEnd.Value   / 1000.0 : null;
+            //double? energyHttpJ = null;
+            //double? avgPowerHttpW = null;
+
 
             // tenta descobrir separador a partir do header
             // seu header costuma ser: Time CPU_mW GPU_mW Total_mW
@@ -99,6 +106,10 @@ namespace WebApiMongoDbDemo.Application
             double[] xs = times.Select(dt => (dt - t0) / 1000.0).ToArray();
             double[] yTotalMw = totalMw.ToArray();
 
+            double? httpStartS = httpStart.HasValue ? (httpStart.Value - t0) / 1000.0 : null;
+            double? httpEndS   = httpEnd.HasValue   ? (httpEnd.Value   - t0) / 1000.0 : null;
+
+
             // --- 3) Energia (área sob a curva) por trapézios ---
             // Total_mW -> W (mW/1000), e dt em segundos => Joules
             // E = Σ ((P_i + P_{i+1})/2) * Δt
@@ -117,6 +128,42 @@ namespace WebApiMongoDbDemo.Application
             double deltaT = xs[^1] - xs[0];
             double avgPowerW = deltaT > 0 ? (energyJ / deltaT) : double.NaN; // "área / ΔT"
 
+            double? energyHttpJ = null;
+            double? avgPowerHttpW = null;
+
+            if (httpStartS.HasValue && httpEndS.HasValue)
+            {
+                double eHttp = 0.0;
+                double dtHttp = 0.0;
+
+                for (int i = 0; i < xs.Length - 1; i++)
+                {
+                    double t1 = xs[i];
+                    double t2 = xs[i + 1];
+
+                    if (t2 <= httpStartS.Value || t1 >= httpEndS.Value)
+                        continue;
+
+                    double dt = Math.Min(t2, httpEndS.Value) -
+                                Math.Max(t1, httpStartS.Value);
+
+                    if (dt <= 0)
+                        continue;
+
+                    double p1W = yTotalMw[i] / 1000.0;
+                    double p2W = yTotalMw[i + 1] / 1000.0;
+
+                    eHttp += (p1W + p2W) * 0.5 * dt;
+                    dtHttp += dt;
+                }
+
+                if (dtHttp > 0)
+                {
+                    energyHttpJ = eHttp;
+                    avgPowerHttpW = eHttp / dtHttp;
+                }
+            }
+
             // --- 4) Plot (e salva arquivo) ---
             outputDir ??= Path.GetDirectoryName(csvPath) ?? Directory.GetCurrentDirectory();
             Directory.CreateDirectory(outputDir);
@@ -126,29 +173,32 @@ namespace WebApiMongoDbDemo.Application
             var reportPath = Path.Combine(outputDir, $"{baseFileName}_plot_report.md");
 
             var plt = new ScottPlot.Plot();
+            plt.Axes.SetLimitsX(0, xs.Max());
+            plt.Axes.SetLimitsY(0, yTotalMw.Max());
+
+
             plt.Title($"Powermetrics Total (mW) — {baseFileName}");
             plt.XLabel("Tempo (s) relativo ao início do powermetrics");
             plt.YLabel("Potência (mW)");
 
             var sig = plt.Add.SignalXY(xs, yTotalMw);
             sig.LegendText = "Total_mW";
-            plt.ShowLegend();
+            plt.ShowLegend(Alignment.UpperRight);
+            
 
             // linhas verticais vermelhas no intervalo HTTP
             // converter httpStart/httpEnd para segundos relativos ao t0 (se existirem)
-            if (httpStart.HasValue)
+            if (httpStartS.HasValue)
             {
-                double xHs = httpStart.Value / 1000.0;
-                var v = plt.Add.VerticalLine(xHs);
+                var v = plt.Add.VerticalLine(httpStartS.Value);
                 v.Color = Colors.Red;
                 v.LineWidth = 2;
                 v.LegendText = "HTTP_START";
             }
 
-            if (httpEnd.HasValue)
+            if (httpEndS.HasValue)
             {
-                double xHe = httpEnd.Value / 1000.0;
-                var v = plt.Add.VerticalLine(xHe);
+                var v = plt.Add.VerticalLine(httpEndS.Value);
                 v.Color = Colors.Red;
                 v.LineWidth = 2;
                 v.LegendText = "HTTP_END";
@@ -229,8 +279,10 @@ namespace WebApiMongoDbDemo.Application
                 EnergyTotalJ = energyJ,
                 AvgPowerTotalW = avgPowerW,
 
-                HttpStartMs = httpStart,
-                HttpEndMs = httpEnd
+                HttpStartMs = httpStartS,
+                HttpEndMs = httpEndS,
+                EnergyHttpJ = energyHttpJ,
+                AvgPowerHttpW = avgPowerHttpW
             };
 ;
         }

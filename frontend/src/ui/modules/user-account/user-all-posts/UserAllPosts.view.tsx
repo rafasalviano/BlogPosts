@@ -82,7 +82,7 @@ export const UserAllPostsView = ({
   return (
     <div className="p-9 flex flex-col gap-4">
       <div className="flex flex-row justify-between">
-        <Typography className="text-gray-900 mb-10" variant="h4">Medição tela</Typography>
+        <Typography className="text-gray-900 mb-10" variant="h4">Medição - Bytes e energia</Typography>
         <Typography variant="caption-1" theme="gray">Você tem {posts.length} posts</Typography>
       </div>
 
