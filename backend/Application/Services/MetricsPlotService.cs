@@ -212,6 +212,7 @@ namespace WebApiMongoDbDemo.Application
 
             txt.FontSize = 16;
             txt.Alignment = Alignment.UpperLeft;
+            txt.OffsetX = 10;
 
 
             plt.SavePng(pngPath, 1400, 700);

@@ -51,6 +51,12 @@ export const UserMedicaoLocalContainer = ({ posts }: IUserMedicaoLocalContainerP
         const data = await res.json();
         console.log("✅ Retorno do backend:", data);
         
+        await fetch("http://localhost:5027/api/metrics-plot/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ CsvFile: data.csvFile }),
+      });
+        
         setResults((prev) => [
           ...prev,
           {

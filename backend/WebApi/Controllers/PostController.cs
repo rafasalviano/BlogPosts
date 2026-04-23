@@ -37,7 +37,7 @@ public class PostController : ControllerBase
             await _service.CreateAsync(post);
         }
 
-        return Ok(new { message = "500 posts seeded successfully." });
+        return Ok(new { message = "5000 posts seeded successfully." });
     }
 
 
